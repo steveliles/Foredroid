@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Foreground</string>
+    <string name="button_label">Bash me!</string>
+</resources>
