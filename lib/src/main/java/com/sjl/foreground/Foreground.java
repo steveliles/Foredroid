@@ -49,12 +49,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  *   public void onCreate(){
  *      super.onCreate();
- *      Foreground.get(this).addListener(listener);
+ *      Foreground.get(getApplication()).addListener(listener);
  *   }
  *
  *   public void onDestroy(){
  *      super.onCreate();
- *      Foreground.get(this).removeListener(listener);
+ *      Foreground.get(getApplication()).removeListener(listener);
  *   }
  */
 public class Foreground implements Application.ActivityLifecycleCallbacks {
