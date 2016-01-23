@@ -1,6 +1,10 @@
 # Foredroid
 
-![logo](https://github.com/steveliles/Foredroid/blob/master/logo_128x128.png?raw=true) Utility for detecting and notifying when your Android app goes background / becomes foreground
+[ ![Download](https://api.bintray.com/packages/steveliles/maven/Foredroid/images/download.svg) ](https://bintray.com/steveliles/maven/Foredroid/_latestVersion)
+
+Utility for detecting and notifying when your Android app goes background / becomes foreground
+
+![logo](https://github.com/steveliles/Foredroid/blob/master/logo_128x128.png?raw=true) 
 
 ### Usage:
 
