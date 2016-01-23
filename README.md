@@ -2,8 +2,6 @@
 
 Utility for detecting and notifying when your Android app goes background / becomes foreground
 
-Status: early draft, needs exhaustive testing!
-
 ### Usage:
 
 Initialise Foreground as early as possible in the startup of your app:
