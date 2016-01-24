@@ -43,5 +43,16 @@ Note that in registering the listener we recorded the Binding that was returned,
     
 ### Maven / Gradle
 
-Pending acceptance by jcenter ...
+The .aar file is available from the jcenter repository. Check that you have the jcenter repository in your top-level
+build.gradle like this:
+
+    allprojects {
+        repositories {
+            jcenter()
+        }
+    }
+
+Add the following dependency to your build.gradle:
+
+    compile 'com.sjl:Foredroid:1.0.0'
 
