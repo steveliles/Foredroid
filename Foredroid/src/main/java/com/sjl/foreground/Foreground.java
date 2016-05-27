@@ -162,7 +162,23 @@ public class Foreground implements Application.ActivityLifecycleCallbacks {
     }
 
     @Override
-    public void onActivityResumed(Activity activity) {}
+    public void onActivityResumed(Activity activity) {
+        current = activity;
+        // remove any scheduled checks since we're starting another activity
+        // we're definitely not going background
+        if (check != null) {
+            handler.removeCallbacks(check);
+        }
+
+        // check if we're becoming foreground and notify listeners
+        if (!foreground && (activity != null && !activity.isChangingConfigurations())){
+            foreground = true;
+            Log.w(TAG, "became foreground");
+            listeners.each(becameForeground);
+        } else {
+            Log.i(TAG, "still foreground");
+        }
+    }
 
     @Override
     public void onActivityPaused(Activity activity) {
@@ -182,21 +198,7 @@ public class Foreground implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityStarted(Activity activity) {
-        current = activity;
-        // remove any scheduled checks since we're starting another activity
-        // we're definitely not going background
-        if (check != null) {
-            handler.removeCallbacks(check);
-        }
 
-        // check if we're becoming foreground and notify listeners
-        if (!foreground && (activity != null && !activity.isChangingConfigurations())){
-            foreground = true;
-            Log.w(TAG, "became foreground");
-            listeners.each(becameForeground);
-        } else {
-            Log.i(TAG, "still foreground");
-        }
     }
 
     @Override
