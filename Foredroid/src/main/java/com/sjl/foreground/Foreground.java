@@ -22,6 +22,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -89,17 +90,22 @@ public class Foreground implements Application.ActivityLifecycleCallbacks {
         }
 
         public void each(Callback callback){
+            List<WeakReference<Listener>> toRemove = new ArrayList<>();
             for (Iterator<WeakReference<Listener>> it = listeners.iterator(); it.hasNext();) {
                 try {
                     WeakReference<Listener> wr = it.next();
                     Listener l = wr.get();
-                    if (l != null)
+                    if (l != null) {
                         callback.invoke(l);
-                    else
-                        it.remove();
+                    } else {
+                        toRemove.add(wr);
+                    }
                 } catch (Exception exc) {
                     Log.e(TAG, "Listener threw exception!", exc);
                 }
+            }
+            if (!toRemove.isEmpty()) {
+                listeners.removeAll(toRemove);
             }
         }
     }
