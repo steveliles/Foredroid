@@ -121,7 +121,7 @@ public class Foreground implements Application.ActivityLifecycleCallbacks {
     private static Foreground instance;
 
     private boolean foreground;
-    private Activity current;
+    private WeakReference<Activity> currentActivity;
     private Listeners listeners = new Listeners();
     private Handler handler = new Handler();
     private Runnable check;
@@ -182,7 +182,7 @@ public class Foreground implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityStarted(Activity activity) {
-        current = activity;
+        currentActivity = new WeakReference<>(activity);
         // remove any scheduled checks since we're starting another activity
         // we're definitely not going background
         if (check != null) {
@@ -219,7 +219,8 @@ public class Foreground implements Application.ActivityLifecycleCallbacks {
 
     private void onActivityCeased(Activity activity){
         if (foreground) {
-            if ((activity == current) && (activity != null && !activity.isChangingConfigurations())){
+            if ((activity == currentActivity.get())
+                    && (activity != null && !activity.isChangingConfigurations())){
                 foreground = false;
                 Log.w(TAG, "went background");
                 listeners.each(becameBackground);
