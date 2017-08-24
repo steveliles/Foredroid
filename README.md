@@ -54,5 +54,5 @@ build.gradle like this:
 
 Add the following dependency to your build.gradle:
 
-    compile 'com.sjl:Foredroid:1.0.1'
+    compile 'com.sjl:Foredroid:1.0.2'
 

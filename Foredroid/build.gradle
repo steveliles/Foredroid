@@ -1,5 +1,8 @@
-def group = 'com.sjl'
-def versionString = '1.0.1'
+def groupString = 'com.sjl'
+def versionString = '1.0.2'
+
+group = groupString
+version = versionString
 
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
@@ -12,7 +15,7 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 14
-        versionCode 2
+        versionCode 3
         versionName versionString
     }
     buildTypes {
@@ -25,31 +28,15 @@ android {
 def siteUrl = 'https://github.com/steveliles/Foredroid'
 def gitUrl = 'https://github.com/steveliles/Foredroid.git'
 
-bintray {
-    user = bintrayUser
-    key = bintrayApiKey
-
-    configurations = ['archives']
-    pkg {
-        repo = "maven"
-        name = "Foredroid"
-        websiteUrl = siteUrl
-        vcsUrl = gitUrl
-        licenses = ["Apache-2.0"]
-        publish = true
-        version {
-            name = versionString
-        }
-        labels = ['aar', 'android']
-    }
-}
-
 install {
     repositories.mavenInstaller {
         pom {
             project {
                 packaging 'aar'
                 name 'Foredroid'
+                groupId groupString
+                version versionString
+                artifactId 'Foredroid'
                 url siteUrl
                 licenses {
                     license {
@@ -71,6 +58,25 @@ install {
                 }
             }
         }
+    }
+}
+
+bintray {
+    user = bintrayUser
+    key = bintrayApiKey
+
+    configurations = ['archives']
+    pkg {
+        repo = "maven"
+        name = "Foredroid"
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = ["Apache-2.0"]
+        publish = true
+        version {
+            name = versionString
+        }
+        labels = ['aar', 'android']
     }
 }
 
