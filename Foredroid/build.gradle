@@ -62,22 +62,22 @@ install {
 }
 
 bintray {
-//    user = bintrayUser
-//    key = bintrayApiKey
-//
-//    configurations = ['archives']
-//    pkg {
-//        repo = "maven"
-//        name = "Foredroid"
-//        websiteUrl = siteUrl
-//        vcsUrl = gitUrl
-//        licenses = ["Apache-2.0"]
-//        publish = true
-//        version {
-//            name = versionString
-//        }
-//        labels = ['aar', 'android']
-//    }
+    user = bintrayUser
+    key = bintrayApiKey
+
+    configurations = ['archives']
+    pkg {
+        repo = "maven"
+        name = "Foredroid"
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = ["Apache-2.0"]
+        publish = true
+        version {
+            name = versionString
+        }
+        labels = ['aar', 'android']
+    }
 }
 
 task sourcesJar(type: Jar) {
