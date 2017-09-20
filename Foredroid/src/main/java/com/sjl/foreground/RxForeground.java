@@ -63,15 +63,15 @@ public class RxForeground implements Application.ActivityLifecycleCallbacks {
     public static final long CHECK_DELAY = 2000;
 
 
-    private static final PublishSubject<Void> becomeForegroundSubject = PublishSubject.create();
-    private static final PublishSubject<Void> becomeBackgroundSubject = PublishSubject.create();
+    private static final PublishSubject<Void> becameForegroundSubject = PublishSubject.create();
+    private static final PublishSubject<Void> becameBackgroundSubject = PublishSubject.create();
 
-    public Completable foregroundObservable(){
-        return becomeForegroundSubject.ignoreElements();
+    public Completable foregroundCompletable(){
+        return becameForegroundSubject.ignoreElements();
     }
 
-  public Completable backgroundObservable(){
-    return becomeBackgroundSubject.ignoreElements();
+  public Completable backgroundCompletable(){
+    return becameBackgroundSubject.ignoreElements();
   }
 
   public interface Listener {
@@ -173,7 +173,7 @@ public class RxForeground implements Application.ActivityLifecycleCallbacks {
             foreground = true;
             Log.w(TAG, "became foreground");
 
-          becomeForegroundSubject.onComplete();
+          becameForegroundSubject.onComplete();
             //listeners.each(becameForeground);
         } else {
             Log.i(TAG, "still foreground");
@@ -204,7 +204,7 @@ public class RxForeground implements Application.ActivityLifecycleCallbacks {
                     && (activity != null && !activity.isChangingConfigurations())){
                 foreground = false;
                 Log.w(TAG, "went background");
-              becomeBackgroundSubject.onComplete();
+              becameBackgroundSubject.onComplete();
               //listeners.each(becameBackground);
             } else {
                 Log.i(TAG, "still foreground");

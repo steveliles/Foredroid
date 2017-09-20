@@ -37,7 +37,7 @@ public abstract class DemoActivity extends AppCompatActivity implements RxForegr
     RxForeground.init(getApplication());
 
     disposable =
-        RxForeground.get().backgroundObservable().subscribeWith(new DisposableCompletableObserver() {
+        RxForeground.get().backgroundCompletable().subscribeWith(new DisposableCompletableObserver() {
           @Override
           public void onComplete() {
             Log.i(RxForeground.TAG, getClass().getName() + " became background - from Completable");
@@ -50,7 +50,7 @@ public abstract class DemoActivity extends AppCompatActivity implements RxForegr
         });
 
     completableObserver =
-        RxForeground.get().foregroundObservable()
+        RxForeground.get().foregroundCompletable()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeWith(new DisposableCompletableObserver() {
           @Override
