@@ -20,10 +20,9 @@ import android.app.Application;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-
+import io.reactivex.Completable;
+import io.reactivex.subjects.PublishSubject;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -58,25 +57,33 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *      Foreground.get(getApplication()).removeListener(listener);
  *   }
  */
-public class Foreground implements Application.ActivityLifecycleCallbacks {
+public class RxForeground implements Application.ActivityLifecycleCallbacks {
 
-    public static final String TAG = Foreground.class.getName();
+    public static final String TAG = RxForeground.class.getName();
     public static final long CHECK_DELAY = 2000;
 
-    public interface Listener {
-        public void onBecameForeground();
-        public void onBecameBackground();
+
+    private static final PublishSubject<Void> becameForegroundSubject = PublishSubject.create();
+    private static final PublishSubject<Void> becameBackgroundSubject = PublishSubject.create();
+
+    public Completable foregroundCompletable(){
+        return becameForegroundSubject.ignoreElements();
+    }
+
+  public Completable backgroundCompletable(){
+    return becameBackgroundSubject.ignoreElements();
+  }
+
+  public interface Listener {
+
     }
 
     public interface Binding {
         public void unbind();
     }
 
-    private interface Callback {
-        public void invoke(Listener listener);
-    }
-
     private static class Listeners {
+
         private List<WeakReference<Listener>> listeners = new CopyOnWriteArrayList<>();
 
         public Binding add(Listener listener){
@@ -88,43 +95,9 @@ public class Foreground implements Application.ActivityLifecycleCallbacks {
                 }
             };
         }
-
-        public void each(Callback callback){
-            List<WeakReference<Listener>> toRemove = new ArrayList<>();
-            for (Iterator<WeakReference<Listener>> it = listeners.iterator(); it.hasNext();) {
-                try {
-                    WeakReference<Listener> wr = it.next();
-                    Listener l = wr.get();
-                    if (l != null) {
-                        callback.invoke(l);
-                    } else {
-                        toRemove.add(wr);
-                    }
-                } catch (Exception exc) {
-                    Log.e(TAG, "Listener threw exception!", exc);
-                }
-            }
-            if (!toRemove.isEmpty()) {
-                listeners.removeAll(toRemove);
-            }
-        }
     }
 
-    private static Callback becameForeground = new Callback() {
-        @Override
-        public void invoke(Listener listener) {
-            listener.onBecameForeground();
-        }
-    };
-
-    private static Callback becameBackground = new Callback() {
-        @Override
-        public void invoke(Listener listener) {
-            listener.onBecameBackground();
-        }
-    };
-
-    private static Foreground instance;
+    private static RxForeground instance;
 
     private boolean foreground;
     private WeakReference<Activity> currentActivity;
@@ -132,22 +105,22 @@ public class Foreground implements Application.ActivityLifecycleCallbacks {
     private Handler handler = new Handler();
     private Runnable check;
 
-    public static Foreground init(Application application){
+    public static RxForeground init(Application application){
         if (instance == null) {
-            instance = new Foreground();
+            instance = new RxForeground();
             application.registerActivityLifecycleCallbacks(instance);
         }
         return instance;
     }
 
-    public static Foreground get(Application application){
+    public static RxForeground get(Application application){
         if (instance == null) {
             init(application);
         }
         return instance;
     }
 
-    public static Foreground get(){
+    public static RxForeground get(){
         if (instance == null) {
             throw new IllegalStateException(
                 "Foreground is not initialised - first invocation must use parameterised init/get");
@@ -199,7 +172,9 @@ public class Foreground implements Application.ActivityLifecycleCallbacks {
         if (!foreground && (activity != null && !activity.isChangingConfigurations())){
             foreground = true;
             Log.w(TAG, "became foreground");
-            listeners.each(becameForeground);
+
+          becameForegroundSubject.onComplete();
+            //listeners.each(becameForeground);
         } else {
             Log.i(TAG, "still foreground");
         }
@@ -229,7 +204,8 @@ public class Foreground implements Application.ActivityLifecycleCallbacks {
                     && (activity != null && !activity.isChangingConfigurations())){
                 foreground = false;
                 Log.w(TAG, "went background");
-                listeners.each(becameBackground);
+              becameBackgroundSubject.onComplete();
+              //listeners.each(becameBackground);
             } else {
                 Log.i(TAG, "still foreground");
             }
